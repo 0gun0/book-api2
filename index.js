@@ -33,6 +33,8 @@ app.use("/api/users", usersRoute);
 app.use("/api/books", booksRoute);
 app.use("/api/rooms", roomsRoute);
 
+app.use(bodyParser.json()); //parser
+
 app.listen(8000, () =>{
     console.log("Book-API Connected!")
 })
