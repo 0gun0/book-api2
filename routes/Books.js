@@ -57,7 +57,44 @@ router.post('/',(req,res)=>{
       }
     });
 
+// 예약 조회 API
 
+router.get('/:bookId', async (req, res) => {
+  const bookId = req.params.bookId;
+
+  try {
+    // MongoDB에서 해당 bookId에 해당하는 예약을 조회
+    const book = await Book.findById(bookId).exec();
+
+    if (!book) {
+      res.status(404).json({ error: '예약이 없습니다.' });
+    } else {
+      res.status(200).json(book);
+    }
+  } catch (error) {
+    res.status(500).json({ error: '예약 조회 중 오류가 발생했습니다.' });
+  }
+});
+
+
+// 예약 전체 조회 API
+
+router.get('/', async (req, res) => {
+    const bookId = req.params.bookId;
+  
+    try {
+      // MongoDB에서 해당 bookId에 해당하는 예약을 조회
+      const book = await Book.find(bookId).exec();
+  
+      if (!book) {
+        res.status(404).json({ error: '예약이 없습니다.' });
+      } else {
+        res.status(200).json(book);
+      }
+    } catch (error) {
+      res.status(500).json({ error: '예약 조회 중 오류가 발생했습니다.' });
+    }
+  });
 
 export default router;
 

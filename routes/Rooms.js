@@ -38,12 +38,12 @@ router.delete("/:id", async (req, res)=>{
     }
 })
 
-//GET ROOM API
+//GET ROOM API ++
 
 router.get("/:id", async (req, res)=>{
     try{
         const Room = await Room.findById(
-            req.params.id);
+        req.params.id);
         res.status(200).json(Room)
     } catch (err){
         res.status(500).json(err)
