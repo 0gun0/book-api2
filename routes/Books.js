@@ -96,6 +96,42 @@ router.get('/', async (req, res) => {
     }
   });
 
+// 예약 수정 API
+
+router.put('/:bookId', async (req, res) => {
+    const bookId = req.params.bookId;
+    const updatedData = req.body; // 수정된 데이터를 요청에서 받음
+  
+    try {
+      // MongoDB에서 해당 bookId에 해당하는 예약을 찾아 수정
+      const updatedBook = await Book.findByIdAndUpdate(bookId, updatedData, { new: true }).exec();
+  
+      if (!updatedBook) {
+        res.status(404).json({ error: '예약이 없습니다.' });
+      } else {
+        res.status(200).json(updatedBook);
+      }
+    } catch (error) {
+      res.status(500).json({ error: '예약 수정 중 오류가 발생했습니다.' });
+    }
+  });
+
+router.delete('/:bookId', async (req, res) => {
+    const bookId = req.params.bookId;
+  
+    try {
+      // MongoDB에서 해당 bookId에 해당하는 예약을 삭제
+      const deletedBook = await Book.findByIdAndRemove(bookId).exec();
+      if (!deletedBook) {
+        res.status(404).json({ error: '예약이 없습니다.' });
+      } else {
+        res.status(204).json("예약이 정상적으로 삭제되었습니다!")
+      }
+    } catch (error) {
+      res.status(500).json({ error: '예약 삭제 중 오류가 발생했습니다.' });
+    }
+  });
+
 export default router;
 
 
