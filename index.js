@@ -6,13 +6,18 @@ import usersRoute from "./routes/Users.js";
 import roomsRoute from "./routes/Rooms.js";
 import booksRoute from "./routes/Books.js";
 
+import bodyParser from 'body-parser';
+
 const app = express();
 
 dotenv.config();
 
 //mongoDB 설정
 try {
-    await mongoose.connect(process.env.MONGO);
+    await mongoose.connect(process.env.MONGO,{
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+      }); //추가
     console.log("Connected to mongoDB")
 }   catch(err){
     throw error;
@@ -25,6 +30,8 @@ mongoose.connection.on("disconnected", ()=>{
 mongoose.connection.on("connected", ()=>{
     console.log("mongoDB connected!")
 });
+
+//middlewares
 
 app.use(express.json());
 
