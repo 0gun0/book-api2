@@ -42,9 +42,8 @@ router.delete("/:id", async (req, res)=>{
 
 router.get("/:id", async (req, res)=>{
     try{
-        const Room = await Room.findById(
-        req.params.id);
-        res.status(200).json(Room)
+        const Rooms = await Room.findById(req.params.id);
+        res.status(200).json(Rooms)
     } catch (err){
         res.status(500).json(err)
     }
