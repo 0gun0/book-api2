@@ -1,6 +1,9 @@
 import User from "../models/User.js"
 import bcrypt from "bcrypt"
 import { createError } from "../utils/error.js";
+import jwt from 'jsonwebtoken';
+import dotenv from "dotenv"
+dotenv.config();
 
 export const register = async (req, res, next)=>{
     try{
@@ -29,10 +32,15 @@ export const login = async (req, res, next) => {
   
       const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password); // user 객체에서 비밀번호 가져오기
       if (!isPasswordCorrect) return next(createError(400, "Wrong password"));
+
+      //JWT 토큰 
+      const token = jwt.sign({id:user._id, isAdmin: user.isAdmin},process.env.JWT)
   
       // 필요없이 응답하는 요소 삭제 user._doc임
       const {password, isAdmin, ...otherDetails } = user._doc;
-      res.status(200).json(otherDetails);
+      res.cookie("access_token", token,{
+        httpOnly: true,
+      }).status(200).json({...otherDetails});
     } catch (err) {
       next(err);
     }

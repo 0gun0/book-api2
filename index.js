@@ -5,6 +5,7 @@ import authRoute from "./routes/auth.js";
 import usersRoute from "./routes/Users.js";
 import roomsRoute from "./routes/Rooms.js";
 import booksRoute from "./routes/Books.js";
+import cookieParser from "cookie-parser";
 
 import bodyParser from 'body-parser';
 
@@ -32,8 +33,8 @@ mongoose.connection.on("connected", ()=>{
 });
 
 //middlewares
-
-app.use(express.json());
+app.use(cookieParser());
+app.use(bodyParser.json());
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);
