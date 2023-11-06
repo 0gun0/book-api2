@@ -4,7 +4,7 @@ import {
     deleteUser,
     getUser,
     getAllUsers} from "../controllers/user.js"
-import { verifyToken, verifyUser } from "../utils/verifyToken.js"
+import { verifyToken, verifyUser,verifyAdmin } from "../utils/verifyToken.js"
 
 const router = express.Router();
 
@@ -15,6 +15,10 @@ router.get("/checkAuthentication", verifyToken, (req, res, next)=>{
 
 router.get("/checkuser/:id", verifyUser, (req, res, next)=>{
     res.send("hello user, you are logged in and can update and delete")
+})
+
+router.get("/checkadmin/:id", verifyAdmin, (req, res, next)=>{
+    res.send("hello user, you are the king in the north!!")
 })
 
 //UPDATE ROOM API
