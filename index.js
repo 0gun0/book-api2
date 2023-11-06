@@ -1,4 +1,5 @@
 import express from "express"
+import cors from 'cors';
 import dotenv from "dotenv"
 import mongoose from "mongoose"
 import authRoute from "./routes/auth.js";
@@ -35,6 +36,7 @@ mongoose.connection.on("connected", ()=>{
 //middlewares
 app.use(cookieParser());
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);

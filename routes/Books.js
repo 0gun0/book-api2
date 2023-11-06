@@ -9,7 +9,7 @@ const router = express.Router();
 // 예약 생성 API
 
 router.post('/',(req,res)=>{
-    const {roomId, userId, bookDateTime, durationHours} = req.body
+    const {roomId, userId, bookDateTime, durationHours,startTime, endTime} = req.body
 
     //요청된 시간을 Date 객체로 파싱
     const requestedTime = new Date(bookDateTime);
