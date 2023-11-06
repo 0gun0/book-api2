@@ -22,17 +22,17 @@ router.get("/checkadmin/:id", verifyAdmin, (req, res, next)=>{
 })
 
 //UPDATE ROOM API
-router.put("/:id", updateUser);
+router.put("/:id", verifyUser, updateUser);
 
 //DELETE ROOM API
-router.delete("/:id", deleteUser);
+router.delete("/:id", verifyUser, deleteUser);
 
 //GET ROOM API ++
 
-router.get("/:id", getUser);
+router.get("/:id", verifyUser, getUser);
 
 //GET ALL ROOMS API
 
-router.get("/", getAllUsers);
+router.get("/", verifyAdmin, getAllUsers);
 
 export default router;
