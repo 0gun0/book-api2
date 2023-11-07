@@ -14,7 +14,6 @@ export const register = async (req, res, next)=>{
 
         const newUser = new User({
             username: req.body.username,
-            email: req.body.email,
             password: hash, //bcrypt 암호화
             name : req.body.name
         })
@@ -42,7 +41,7 @@ export const login = async (req, res, next) => {
       const {password, isAdmin, ...otherDetails } = user._doc;
       res.cookie("access_token", token,{
         httpOnly: true,
-      }).status(200).json({message:"로그인성공",token:token}); 
+      }).status(200).json({message:"로그인성공하셨습니다",token:token}); 
     } catch (err) {
       next(err);
     }
@@ -65,5 +64,5 @@ export const logout = (req, res) => {
   res.clearCookie('access_token');
 
   // 로그아웃 성공 메시지를 응답으로 전송
-  res.status(200).json({ message: '로그아웃 성공' });
+  res.status(200).json({ message: '로그아웃 성공하셨습니다' });
 };
