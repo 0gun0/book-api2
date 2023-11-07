@@ -10,10 +10,15 @@ const BookSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    bookDateTime: {
-        type: Date,
-        required: true
+    bookDate:{
+        type: String,
+        required: true,
     },
+    bookTime:{
+        type: String,
+        required: true,
+    },
+    
     durationHours: {
         type: Number,
 		required: true

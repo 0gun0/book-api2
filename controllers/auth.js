@@ -38,14 +38,15 @@ export const login = async (req, res, next) => {
       const token = jwt.sign({id:user._id, isAdmin: user.isAdmin},process.env.JWT)
   
       // 필요없이 응답하는 요소 삭제 user._doc임
-      const {password, isAdmin, ...otherDetails } = user._doc;
+      const {password, isAdmin,_id,...otherDetails } = user._doc;
       res.cookie("access_token", token,{
         httpOnly: true,
-      }).status(200).json({message:"로그인성공하셨습니다",token:token}); 
+      }).status(200).json({message:"로그인성공하셨습니다",token:token,id:_id}); 
     } catch (err) {
       next(err);
     }
   };
+
 
   //로그아웃 API
 

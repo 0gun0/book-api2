@@ -9,23 +9,23 @@ const router = express.Router();
 // 예약 생성 API
 
 router.post('/',(req,res)=>{
-    const {roomId, userId, bookDateTime, durationHours,startTime, endTime} = req.body
+    const {roomId, userId, bookDate, bookTime, durationHours,startTime, endTime} = req.body
 
     //요청된 시간을 Date 객체로 파싱
-    const requestedTime = new Date(bookDateTime);
+    const requestedTime = new Date(bookTime);
     const requestedHour = requestedTime.getHours(); //utc시간으로 할때임.
 
     // requestedTime.setHours(requestedTime.getHours() + 9); //UTC 시간을 한국시간으로 변환
     
     // const requestedHour = requestedTime.getHours(); //시간 추출 1시간 or 2시간
 
-    //9시부터 18시 사이에 1,2시간 단위로 예약
-    if (requestedHour >= 9 && requestedHour <= 18 && (requestedHour - 9) % durationHours === 0) {
+    //9시부터 21시 사이에 1,2시간 단위로 예약
+    if (requestedHour >= 9 && requestedHour <= 21 && (requestedHour - 9) % durationHours === 0) {
         // 중복 예약 확인 (이미 해당 시간대에 예약이 있는지 확인)
         Book.find(
           {
             roomId: roomId,
-            bookDateTime: requestedTime
+            bookTime: requestedTime
           },
           (err, existingBookings) => {
             if (err) {
@@ -37,7 +37,7 @@ router.post('/',(req,res)=>{
               const book = new Book({
                 roomId,
                 userId,
-                bookDateTime: requestedTime,
+                bookTime: requestedTime,
                 durationHours
               });
 
@@ -133,6 +133,8 @@ router.delete('/:bookId', async (req, res) => {
   });
 
 export default router;
+
+
 
 
 

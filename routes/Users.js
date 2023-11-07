@@ -21,18 +21,26 @@ router.get("/checkadmin/:id", verifyAdmin, (req, res, next)=>{
     res.send("hello user, you are the king in the north!!")
 })
 
-//UPDATE ROOM API
+//UPDATE USER API
 router.put("/:id", verifyUser, updateUser);
 
-//DELETE ROOM API
+//DELETE USER API
 router.delete("/:id", verifyUser, deleteUser);
 
-//GET ROOM API ++
+
+
+  // API 엔드포인트: 유저 정보 확인
+  router.get('/userinfo', (req, res) => {
+    res.json({ userInfo: req.userInfo }); // 유저 정보를 반환
+  });
+
+//GET USER API ++
 
 router.get("/:id", verifyUser, getUser);
 
-//GET ALL ROOMS API
+//GET ALL USERS API
 
 router.get("/", verifyAdmin, getAllUsers);
 
 export default router;
+
