@@ -52,18 +52,18 @@ export const login = async (req, res, next) => {
 
   /** 로그아웃 API */ 
 
-// router.post('/log-out', (req, res, next) => {
-//   try {
-//       // 클라이언트로부터 JWT 토큰을 받아옵니다.
-//       const token = req.headers.authorization.replace('Bearer ', ''); // 프론트에서 req.headers.authorization을 받음
-//       // 토큰을 블랙리스트에 추가하여 무효화시킨다.
-//       const blacklistedTokens = []; 
-//       blacklistedTokens.push(token); // 푸쉬, 블랙리스트에 토큰 추가
-//       // res.clearCookie('authorization'); // 클라이언트 쿠키 제거. 'authorization'라는 이름의 쿠키를 클라이언트에서 제거
-//       res.status(200).json({ message: '로그아웃 성공' });
-//   } catch (error) {
-//       // 오류가 발생한 경우 에러 응답을 보냅니다.
-//       console.log(error);
-//       res.status(500).json({ error: '로그아웃 중 오류가 발생했습니다.' });
-//   }
-// });
+// 로그아웃 API
+export const logout = (req, res) => {
+  // 클라이언트로부터 토큰을 받아옵니다.
+  const token = req.cookies.access_token;
+
+  // 서버에서 토큰을 무효화하거나 블랙리스트에 추가할 수 있지만,
+  // 일반적으로는 새로운 토큰을 클라이언트에게 제공하지 않아 로그아웃 상태로 처리합니다.
+  // 클라이언트는 더 이상 유효한 토큰을 갖지 않게 됩니다.
+
+  // 쿠키에서 토큰 제거
+  res.clearCookie('access_token');
+
+  // 로그아웃 성공 메시지를 응답으로 전송
+  res.status(200).json({ message: '로그아웃 성공' });
+};
