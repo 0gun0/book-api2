@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from "dotenv"
 dotenv.config();
 
+// 회원가입 API
 export const register = async (req, res, next)=>{
     try{
 
@@ -18,7 +19,7 @@ export const register = async (req, res, next)=>{
         })
 
         await newUser.save()
-        res.status(200).send("User Created!")
+        res.status(201).json({message:'회원가입이 완료되었습니다.'})
     }catch(err){
         next(err)
     }
@@ -28,10 +29,10 @@ export const register = async (req, res, next)=>{
 export const login = async (req, res, next) => {
     try {
       const user = await User.findOne({ username: req.body.username });
-      if (!user) return next(createError(404, "User not found!"));
+      if (!user) return next(createError(404, {message:"존재하지 않는 아이디입니다."}));
   
       const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password); // user 객체에서 비밀번호 가져오기
-      if (!isPasswordCorrect) return next(createError(400, "Wrong password"));
+      if (!isPasswordCorrect) return next(createError(400, {message:"비밀번호가 일치하지 않습니다."}));
 
       //JWT 토큰 
       const token = jwt.sign({id:user._id, isAdmin: user.isAdmin},process.env.JWT)
@@ -40,8 +41,10 @@ export const login = async (req, res, next) => {
       const {password, isAdmin, ...otherDetails } = user._doc;
       res.cookie("access_token", token,{
         httpOnly: true,
-      }).status(200).json({...otherDetails});
+      }).status(200).json({message:"로그인성공",token:token}); 
     } catch (err) {
       next(err);
     }
   };
+
+  //로그아웃 API

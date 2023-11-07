@@ -44,6 +44,7 @@ app.use("/api/books", booksRoute);
 app.use("/api/rooms", roomsRoute);
 
 app.use(bodyParser.json()); //parser
+app.use(express.urlencoded({ extended: true })); //URL encoded 추가. req.body값을 객체로 받아야함
 
 app.listen(8000, () =>{
     console.log("Book-API Connected!")
