@@ -1,5 +1,5 @@
 import express from "express";
-import { register,login,logout } from "../controllers/auth.js";
+import { register,login,logout,findPassword } from "../controllers/auth.js";
 
 const router = express.Router();
 
@@ -19,5 +19,7 @@ router.post("/login", login)
 // 로그아웃 API
 router.post("/logout", logout)
 
+// 비밀번호 찾기 API
+router.post("/findpassword", findPassword)
 
 export default router;

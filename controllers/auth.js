@@ -29,10 +29,10 @@ export const register = async (req, res, next)=>{
 export const login = async (req, res, next) => {
     try {
       const user = await User.findOne({ username: req.body.username });
-      if (!user) return next(createError(404, {message:"존재하지 않는 아이디입니다."}));
+      if (!user) res.status(404).json({message:"존재하지 않는 아이디입니다."});
   
       const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password); // user 객체에서 비밀번호 가져오기
-      if (!isPasswordCorrect) return next(createError(400, {message:"비밀번호가 일치하지 않습니다."}));
+      if (!isPasswordCorrect) res.status(400).json({message:"비밀번호가 일치하지 않습니다."});
 
       //JWT 토큰 
       const token = jwt.sign({id:user._id, isAdmin: user.isAdmin},process.env.JWT)
@@ -66,3 +66,57 @@ export const logout = (req, res) => {
   // 로그아웃 성공 메시지를 응답으로 전송
   res.status(200).json({ message: '로그아웃 성공하셨습니다' });
 };
+
+// 비밀번호 수정 API 
+//1. DB에서 이름과 아이디를 조회하고 둘다 맞으면 그에대한 비밀번호를 수정한다.
+// export const findPassword = async (req, res)=>{
+//   try{
+//     const isUsername = await User.findOne({ username : req.body.username});
+//     if (!isUsername) return next(createError(404, {message : "DB에 이런 아이디를 가진 회원은 없습니다."}))
+
+//     const isName = await User.findOne({ name : req.body.name});
+//     if (!isName) return next(createError(404, {message : "DB에 이런 이름은 가진 회원은 없습니다."}))
+
+//   } catch(err){
+//     next(err)
+//   }
+// }
+
+//비밀번호 수정API 
+export const findPassword = async (req, res, next) => {
+  try {
+    const username = req.body.username;
+    const name = req.body.name;
+
+    // 사용자를 아이디(username)로 찾기
+    const userByUsername = await User.findOne({ username: username });
+    if (!userByUsername) {
+        res.status(404).json({ message: "DB에 이런 아이디를 가진 회원은 없습니다." });
+    }
+    // res.status(200).json({ message: "비밀번호가 업데이트되었습니다." });
+
+    // 사용자를 이름(name)으로 찾기
+    const userByName = await User.findOne({ name: name });
+    if (!userByName) {
+        res.status(404).json({ message: "DB에 이런 이름을 가진 회원은 없습니다." });
+    }
+
+    // 아이디(username)와 이름(name) 둘 다 일치하는 경우에만 비밀번호를 수정할 수 있도록 처리
+    if (userByUsername._id.toString() === userByName._id.toString()) {
+      const newPassword = "newPassword";
+      //보안상 비밀번호 해싱
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(newPassword,saltRounds);
+
+      userByUsername.password = hashedPassword //비밀번호 필드 업데이트
+
+      await userByUsername.save(); //변경된 사용자 정보를 저장
+      
+      res.status(200).json({message : "비밀번호가 업데이트 되었습니다!"})
+    } else {
+      res.status(400).json({ message: "아이디와 이름이 일치하지 않습니다." });
+    }
+  } catch (err) {
+    next(err);
+  }
+}

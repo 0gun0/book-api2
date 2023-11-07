@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    }, // email, password는 회원가입, 로그인할 때 필요해서 했던 건데 필요한가?
+    }, // username , password는 회원가입, 로그인할 때 필요해서 했던 건데 필요한가?
     name:{
         type: String,
         required: true,
