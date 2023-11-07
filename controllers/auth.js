@@ -82,8 +82,8 @@ export const logout = (req, res) => {
 //   }
 // }
 
-//비밀번호 수정API 
-export const findPassword = async (req, res, next) => {
+//비밀번호 수정API1 : 아이디와 이름이 일치여부 확인
+export const same = async (req, res, next) => {
   try {
     const username = req.body.username;
     const name = req.body.name;
@@ -104,15 +104,14 @@ export const findPassword = async (req, res, next) => {
     // 아이디(username)와 이름(name) 둘 다 일치하는 경우에만 비밀번호를 수정할 수 있도록 처리
     if (userByUsername._id.toString() === userByName._id.toString()) {
       const newPassword = "newPassword";
-      //보안상 비밀번호 해싱
-      const saltRounds = 10;
-      const hashedPassword = await bcrypt.hash(newPassword,saltRounds);
+      // //보안상 비밀번호 해싱
+      // const saltRounds = 10;
+      // const hashedPassword = await bcrypt.hash(newPassword,saltRounds);
 
-      userByUsername.password = hashedPassword //비밀번호 필드 업데이트
+      // userByUsername.password = hashedPassword //비밀번호 필드 업데이트
 
-      await userByUsername.save(); //변경된 사용자 정보를 저장
-      
-      res.status(200).json({message : "비밀번호가 업데이트 되었습니다!"})
+      // await userByUsername.save(); //변경된 사용자 정보를 저장
+      res.status(200).json({message : "아이디와 비밀번호가 일치합니다! 비밀번호를 수정해주세요"})
     } else {
       res.status(400).json({ message: "아이디와 이름이 일치하지 않습니다." });
     }
@@ -120,3 +119,5 @@ export const findPassword = async (req, res, next) => {
     next(err);
   }
 }
+
+// 비밀번호 수정 API : 
