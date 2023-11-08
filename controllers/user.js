@@ -14,7 +14,7 @@ export const updateUser = async (req, res, next)=>{
 export const deleteUser = async (req, res, next)=>{
     try{
         await User.findByIdAndDelete(req.params.id);
-        res.status(200).json("선택된 방 삭제완료!");
+        res.status(200).json("선택된 유저 삭제완료!");
     } catch (err){
         next(err); //next 에러 미들웨어
     } 
@@ -30,7 +30,6 @@ export const getUser = async (req, res, next)=>{
 }
 
 export const getAllUsers = async (req, res, next)=>{
-    const newUser = new User(req.body)
 
     try{
         const users = await User.find();
@@ -62,6 +61,4 @@ export const getUserInfoFromToken = (req, res, next) => {
   };
   
   // 미들웨어를 사용하여 AccessToken을 사용하여 유저 정보 확인
-  
-
   

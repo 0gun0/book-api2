@@ -115,6 +115,45 @@ export const same = async (req, res, next) => {
   }
 }
 
+//비밀번호 수정API -합친거
+
+export const updatePassword = async (req, res, next) => {
+  try {
+    const username = req.body.username;
+    const name = req.body.name;
+    const newPassword = req.body.newPassword;
+
+    // 사용자를 아이디(username)로 찾기
+    const userByUsername = await User.findOne({ username: username });
+    if (!userByUsername) {
+      return res.status(404).json({ message: "DB에 이런 아이디를 가진 회원은 없습니다." });
+    }
+
+    // 사용자를 이름(name)로 찾기
+    const userByName = await User.findOne({ name: name });
+    if (!userByName) {
+      return res.status(404).json({ message: "DB에 이런 이름을 가진 회원은 없습니다." });
+    }
+
+    // 아이디(username)와 이름(name) 둘 다 일치하는 경우에만 비밀번호를 수정할 수 있도록 처리
+    if (userByUsername._id.toString() === userByName._id.toString()) {
+      // 새 비밀번호를 해싱
+      const saltRounds = 10; // 솔트를 생성할 반복 횟수
+      const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+      // 해싱된 비밀번호를 데이터베이스에 저장
+      userByUsername.password = hashedPassword;
+      await userByUsername.save();
+
+      return res.status(200).json({ message: "비밀번호가 업데이트되었습니다." });
+    } else {
+      return res.status(400).json({ message: "아이디와 이름이 일치하지 않습니다." });
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
       // //보안상 비밀번호 해싱
       // const saltRounds = 10;
       // const hashedPassword = await bcrypt.hash(newPassword,saltRounds);
