@@ -7,7 +7,6 @@ import usersRoute from "./routes/Users.js";
 import roomsRoute from "./routes/Rooms.js";
 import booksRoute from "./routes/Books.js";
 import cookieParser from "cookie-parser";
-import { getUserInfoFromToken } from "./controllers/user.js";
 import bodyParser from 'body-parser';
 
 const app = express();

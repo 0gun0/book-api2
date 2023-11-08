@@ -4,7 +4,7 @@ import {
     deleteUser,
     getUser,
     getAllUsers} from "../controllers/user.js"
-import { verifyToken, verifyUser,verifyAdmin } from "../utils/verifyToken.js"
+import { verifyToken, verifyUser,verifyAdmin,getUserInfoFromToken } from "../utils/verifyToken.js"
 
 const router = express.Router();
 
@@ -34,6 +34,11 @@ router.delete("/:id", verifyUser, deleteUser);
     res.json({ userInfo: req.userInfo }); // 유저 정보를 반환
   });
 
+//USER 토큰을 이용해서 정보조회하는 API 
+router.get("/userinfo2", getUserInfoFromToken, (req,res) => {
+    res.json({userInfo: req.userInfo});
+})
+
 //GET USER API ++
 
 router.get("/:id", verifyUser, getUser);
@@ -41,6 +46,8 @@ router.get("/:id", verifyUser, getUser);
 //GET ALL USERS API
 
 router.get("/", verifyAdmin, getAllUsers);
+
+
 
 export default router;
 
