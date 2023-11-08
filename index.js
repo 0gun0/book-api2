@@ -8,8 +8,10 @@ import roomsRoute from "./routes/Rooms.js";
 import booksRoute from "./routes/Books.js";
 import cookieParser from "cookie-parser";
 import bodyParser from 'body-parser';
-
+import morgan from "morgan";
 const app = express();
+
+app.use(morgan('dev'));
 
 dotenv.config();
 
