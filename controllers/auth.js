@@ -27,25 +27,30 @@ export const register = async (req, res, next)=>{
 
 // 로그인 API
 export const login = async (req, res, next) => {
-    try {
-      const user = await User.findOne({ username: req.body.username });
-      if (!user) res.status(404).json({message:"존재하지 않는 아이디입니다."});
-  
-      const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password); // user 객체에서 비밀번호 가져오기
-      if (!isPasswordCorrect) res.status(400).json({message:"비밀번호가 일치하지 않습니다."});
+  try {
+    const user = await User.findOne({ username: req.body.username });
+    if (!user) return res.status(404).json({ message: "존재하지 않는 아이디입니다." });
 
-      //JWT 토큰 
-      const token = jwt.sign({id:user._id, isAdmin: user.isAdmin},process.env.JWT)
-  
-      // 필요없이 응답하는 요소 삭제 user._doc임
-      const {password, isAdmin,_id,...otherDetails } = user._doc;
-      res.cookie("access_token", token,{
-        httpOnly: true,
-      }).status(200).json({message:"로그인성공하셨습니다",token:token,id:_id}); 
-    } catch (err) {
-      next(err);
-    }
-  };
+    const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password);
+    if (!isPasswordCorrect) return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
+
+    // JWT에 'name' 필드를 포함하여 생성
+    const token = jwt.sign(
+      { id: user._id, isAdmin: user.isAdmin, name: user.name },
+      process.env.JWT,
+      { expiresIn: '30m' }
+    );
+
+    // 응답에 JWT와 사용자 이름을 포함
+    res.status(200).json({
+      message: "로그인 성공하셨습니다.",
+      token: token,
+      name: user.name // 클라이언트에 전달할 사용자 이름
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 
   //로그아웃 API

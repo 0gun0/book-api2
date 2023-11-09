@@ -39,6 +39,17 @@ router.get("/userinfo2", getUserInfoFromToken, (req,res) => {
     res.json({userInfo: req.userInfo});
 })
 
+//USER 토큰을 이용해서 username만 가져오는 API
+router.get('/userinfo', getUserInfoFromToken, (req, res) => {
+    const userInfo = req.userInfo;
+    res.json({ userInfo: userInfo.username });
+  });
+
+router.get('/userinfo', getUserInfoFromToken, (req, res) => {
+  const userInfo = req.userInfo;
+  res.json({ username: userInfo.username }); // userInfo에서 username 필드를 반환
+});
+
 //GET USER API ++
 
 router.get("/:id", verifyUser, getUser);
@@ -46,6 +57,8 @@ router.get("/:id", verifyUser, getUser);
 //GET ALL USERS API
 
 router.get("/", verifyAdmin, getAllUsers);
+
+router.get("/info", getUserInfoFromToken, getAllUsers);
 
 
 
