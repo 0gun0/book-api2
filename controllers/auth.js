@@ -41,13 +41,16 @@ export const login = async (req, res, next) => {
       { expiresIn: '30m' }
     );
 
-    // 응답에 JWT와 사용자 이름을 포함
-    res.status(200).json({
-      message: "로그인 성공하셨습니다.",
-      token: token,
-      id: user._id,
-      name: user.name // 클라이언트에 전달할 사용자 이름
-    });
+    // 필요없이 응답하는 요소 삭제 user._doc임
+    const {password, isAdmin,_id,...otherDetails } = user._doc;
+    res.cookie("access_token", token,{
+      httpOnly: true,
+    }).status(200).json({
+      message:"로그인성공하셨습니다",
+      token:token,
+      id:_id,
+      name: user.name // 클라이언트에 전달할 사용자 이름); 
+  });
   } catch (err) {
     next(err);
   }

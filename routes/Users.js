@@ -30,9 +30,6 @@ router.delete("/:id", verifyUser, deleteUser);
 
 
   // API 엔드포인트: 유저 정보 확인
-  router.get('/userinfo', (req, res) => {
-    res.json({ userInfo: req.userInfo }); // 유저 정보를 반환
-  });
 
 //USER 토큰을 이용해서 정보조회하는 API 
 router.get("/userinfo2", getUserInfoFromToken, (req,res) => {
@@ -41,7 +38,6 @@ router.get("/userinfo2", getUserInfoFromToken, (req,res) => {
 
 //USER 토큰을 이용해서 username만 가져오는 API
 router.get('/userinfo', getUserInfoFromToken, (req, res) => {
-    const userInfo = req.userInfo;
     res.json({ userInfo: userInfo.username });
   });
 
