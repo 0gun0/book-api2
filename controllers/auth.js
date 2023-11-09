@@ -45,6 +45,7 @@ export const login = async (req, res, next) => {
     res.status(200).json({
       message: "로그인 성공하셨습니다.",
       token: token,
+      id: user._id,
       name: user.name // 클라이언트에 전달할 사용자 이름
     });
   } catch (err) {
