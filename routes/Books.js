@@ -11,50 +11,41 @@ const router = express.Router();
 router.post('/', (req, res) => {
   const { roomId, userId, bookDate, bookTime, durationHours } = req.body;
 
-  // bookTime을 시작 시간과 종료 시간으로 분리
-  const [startTime, endTime] = bookTime.split(' - ');
+  // bookTime 문자열을 "HH:mm ~ HH:mm" 형식으로 받음
+  // 예약 가능한 시간대인지 확인하는 로직이 필요하다면 여기에 추가
 
-  // startTime과 endTime을 Date 객체로 변환 (예: "17:00" -> "2023-11-08T17:00:00.000Z")
-  const startDateTime = new Date(`${bookDate}T${startTime}:00.000Z`);
-  const endDateTime = new Date(`${bookDate}T${endTime}:00.000Z`);
+  // 중복 예약 확인 (이미 해당 시간대에 예약이 있는지 확인)
+  Book.find(
+    {
+      roomId: roomId,
+      bookDate: bookDate,
+      bookTime: bookTime // 클라이언트가 보낸 문자열을 그대로 사용
+    },
+    (err, existingBookings) => {
+      if (err) {
+        res.status(500).json({ error: '예약 확인 중 오류가 발생했습니다.' });
+      } else if (existingBookings.length > 0) {
+        res.status(400).json({ error: '이미 해당 시간대에 예약이 있습니다.' });
+      } else {
+        // 새로운 예약을 생성
+        const book = new Book({
+          roomId,
+          userId,
+          bookDate,
+          bookTime, // "HH:mm ~ HH:mm" 형식의 문자열로 저장
+          durationHours
+        });
 
-  //9시부터 21시 사이에 1,2시간 단위로 예약
-  if (startDateTime.getHours() >= 9 && startDateTime.getHours() <= 21 && (startDateTime.getHours() - 9) % durationHours === 0) {
-    // 중복 예약 확인 (이미 해당 시간대에 예약이 있는지 확인)
-    Book.find(
-      {
-        roomId: roomId,
-        bookTime: startDateTime
-      },
-      (err, existingBookings) => {
-        if (err) {
-          res.status(500).json({ error: '예약 확인 중 오류가 발생했습니다.' });
-        } else if (existingBookings.length > 0) {
-          res.status(400).json({ error: '이미 해당 시간대에 예약이 있습니다.' });
-        } else {
-          // 새로운 예약을 생성
-          const book = new Book({
-            roomId,
-            userId,
-            bookDate,
-            bookTime: startDateTime.toISOString(), // 시작 시간을 ISO 문자열로 변환
-            durationHours
-          });
-
-          book.save((err) => {
-            if (err) {
-              res.status(500).json({ error: '예약을 생성하는 동안 오류가 발생했습니다.' });
-            } else {
-              res.status(201).json(book); // 예약 성공시 book json을 반환
-            }
-          });
-        }
+        book.save((err) => {
+          if (err) {
+            res.status(500).json({ error: '예약을 생성하는 동안 오류가 발생했습니다.' });
+          } else {
+            res.status(201).json(book); // 예약 성공시 book json을 반환
+          }
+        });
       }
-    );
-  } else {
-    console.log(req.body);
-    res.status(400).json({ error: '선택한 시간대는 예약할 수 없거나 시간 간격이 올바르지 않습니다.' });
-  }
+    }
+  );
 });
 
 
@@ -154,8 +145,4 @@ router.delete('/books', async (req, res) => {
 
 
 export default router;
-
-
-
-
 
