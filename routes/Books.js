@@ -4,7 +4,16 @@ import Book from "../models/Book.js";
 
 const router = express.Router();
 
-
+// 예약 전체 삭제 API
+router.delete('/deleteAll', async (req, res) => {
+  try {
+    await Book.deleteMany({});
+    res.status(200).json({ message: '모든 예약이 삭제되었습니다.' });
+  } catch (err) {
+    console.error(err);  // 콘솔에 오류 출력
+    res.status(500).json({ error: '예약 삭제 중 오류가 발생했습니다.' });
+  }
+});
 
 // 예약 생성 API
 
@@ -94,7 +103,7 @@ router.get('/', async (req, res) => {
     }
   });
 
-// 예약 수정 API
+// 예약 수정 API `{$bookid}
 
 router.put('/:bookId', async (req, res) => {
     const bookId = req.params.bookId;
@@ -114,7 +123,7 @@ router.put('/:bookId', async (req, res) => {
     }
   });
 
-// 예약 삭제 API `${id}`
+// 예약 하나 삭제 API `${bookid}`
 router.delete('/:bookId', async (req, res) => {
     const bookId = req.params.bookId;
   
@@ -130,18 +139,6 @@ router.delete('/:bookId', async (req, res) => {
       res.status(500).json({ error: '예약 삭제 중 오류가 발생했습니다.' });
     }
   });
-
-// 예약 전체 삭제 API
-router.delete('/books', async (req, res) => {
-  try {
-    // MongoDB에서 모든 예약 데이터 삭제
-    await Book.deleteMany({}).exec();
-    res.status(204).json({ message: "모든 예약이 정상적으로 삭제되었습니다!" });
-  } catch (error) {
-    res.status(500).json({ error: '예약 삭제 중 오류가 발생했습니다.' });
-  }
-});
-
 
 
 export default router;
