@@ -61,25 +61,24 @@ router.post('/', (req, res) => {
 
 // 예약 조회 API 
 //bookId-> 로그인할 때 토큰값과 함께주는 id를 안다. 프론트는 
-// http://3.36.132.186:8000/api/books/:bookId 
+// http://13.209.65.63:8000/api/books/:bookId 
 //=> 에서 bookId->id로
-router.get('/:id', async (req, res) => {
-  const Id = req.params.id;
+router.get('/', async (req, res) => {
+  // 쿼리 파라미터를 사용하여 필터링할 수 있습니다.
+  // 예: /api/books?userId=<사용자ID>
+  const query = req.query;
 
   try {
-    // MongoDB에서 해당 bookId에 해당하는 예약을 조회
-    const book = await Book.findById(Id).exec();
+    // MongoDB에서 쿼리에 해당하는 예약들을 조회
+    const books = await Book.find(query).exec();
 
-
-    if (!book) {
+    if (!books || books.length === 0) {
       res.status(404).json({ error: '예약이 없습니다.' });
     } else {
-      res.status(200).json(book);
-      console.log(err3)
+      res.status(200).json(books);
     }
   } catch (error) {
     res.status(500).json({ error: '예약 조회 중 오류가 발생했습니다.' });
-    console.log
   }
 });
 
