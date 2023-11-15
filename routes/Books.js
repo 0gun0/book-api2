@@ -16,24 +16,38 @@ router.delete('/deleteAll', async (req, res) => {
 });
 
 // 예약 생성 API
-
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { roomId, userId, bookDate, bookTime, durationHours } = req.body;
 
-  // bookTime 문자열을 "HH:mm ~ HH:mm" 형식으로 받음
-  // 예약 가능한 시간대인지 확인하는 로직이 필요하다면 여기에 추가
+  // 예약 가능한 시간대 범위 설정 (9시부터 21시까지)
+  const validTimeRange = {
+    start: 9,
+    end: 21
+  };
 
-  // 중복 예약 확인 (이미 해당 시간대에 예약이 있는지 확인)
-  Book.find(
-    {
-      roomId: roomId,
-      bookDate: bookDate,
-      bookTime: bookTime // 클라이언트가 보낸 문자열을 그대로 사용
-    },
-    (err, existingBookings) => {
-      if (err) {
-        res.status(500).json({ error: '예약 확인 중 오류가 발생했습니다.' });
-      } else if (existingBookings.length > 0) {
+  // 예약 가능한 최대 시간 설정 (1 또는 2시간)
+  const maxDurationHours = [1, 2];
+
+  try {
+    // bookTime 문자열을 파싱하여 시작 시간과 종료 시간 추출
+    const [startTimeStr, endTimeStr] = bookTime.split(' ~ ');
+    const startTime = parseInt(startTimeStr, 10);
+    const endTime = parseInt(endTimeStr, 10);
+
+    // 예약 가능한 시간대와 최대 시간 검사
+    if (
+      startTime >= validTimeRange.start &&
+      endTime <= validTimeRange.end &&
+      maxDurationHours.includes(durationHours)
+    ) {
+      // 중복 예약 확인 (이미 해당 시간대에 예약이 있는지 확인)
+      const existingBookings = await Book.find({
+        roomId: roomId,
+        bookDate: bookDate,
+        bookTime: bookTime
+      }).exec();
+
+      if (existingBookings.length > 0) {
         res.status(400).json({ error: '이미 해당 시간대에 예약이 있습니다.' });
       } else {
         // 새로운 예약을 생성
@@ -41,7 +55,7 @@ router.post('/', (req, res) => {
           roomId,
           userId,
           bookDate,
-          bookTime, // "HH:mm ~ HH:mm" 형식의 문자열로 저장
+          bookTime,
           durationHours
         });
 
@@ -49,13 +63,18 @@ router.post('/', (req, res) => {
           if (err) {
             res.status(500).json({ error: '예약을 생성하는 동안 오류가 발생했습니다.' });
           } else {
-            res.status(201).json(book); // 예약 성공시 book json을 반환
+            res.status(201).json(book); // 예약 성공시 book JSON 반환
           }
         });
       }
+    } else {
+      res.status(400).json({ error: '예약이 불가능한 시간대 또는 시간입니다.' });
     }
-  );
+  } catch (error) {
+    res.status(500).json({ error: '예약 생성 중 오류가 발생했습니다.' });
+  }
 });
+
 
 
 
