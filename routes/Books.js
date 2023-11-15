@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
 
   try {
     // bookTime 문자열을 파싱하여 시작 시간과 종료 시간 추출
-    const [startTimeStr, endTimeStr] = bookTime.split(' ~ ');
+    const [startTimeStr, endTimeStr] = bookTime.split(' - ');
     const startTime = parseInt(startTimeStr, 10);
     const endTime = parseInt(endTimeStr, 10);
 
