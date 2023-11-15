@@ -63,6 +63,26 @@ router.post('/', (req, res) => {
 //bookId-> 로그인할 때 토큰값과 함께주는 id를 안다. 프론트는 
 // http://3.36.132.186:8000/api/books/:bookId 
 //=> 에서 bookId->id로
+// router.get('/:id', async (req, res) => {
+//   const Id = req.params.id;
+
+//   try {
+//     // MongoDB에서 해당 bookId에 해당하는 예약을 조회
+//     const book = await Book.findById(Id).exec();
+
+
+//     if (!book) {
+//       res.status(404).json({ error: '예약이 없습니다.' });
+//     } else {
+//       res.status(200).json(book);
+//       console.log(err3)
+//     }
+//   } catch (error) {
+//     res.status(500).json({ error: '예약 조회 중 오류가 발생했습니다.' });
+//     console.log
+//   }
+// });
+
 router.get('/:id', async (req, res) => {
   const Id = req.params.id;
 
@@ -70,16 +90,13 @@ router.get('/:id', async (req, res) => {
     // MongoDB에서 해당 bookId에 해당하는 예약을 조회
     const book = await Book.findById(Id).exec();
 
-
     if (!book) {
-      res.status(404).json({ error: '예약이 없습니다.' });
+      return res.status(404).json({ error: '예약이 없습니다.' }); // return 추가
     } else {
-      res.status(200).json(book);
-      console.log(err3)
+      return res.status(200).json(book); // return 추가
     }
   } catch (error) {
-    res.status(500).json({ error: '예약 조회 중 오류가 발생했습니다.' });
-    console.log
+    return res.status(500).json({ error: '예약 조회 중 오류가 발생했습니다.' }); // return 추가
   }
 });
 
