@@ -83,17 +83,18 @@ router.post('/', (req, res) => {
 //   }
 // });
 
+// 특정 사용자(ID)의 예약 조회 API
 router.get('/:id', async (req, res) => {
-  const Id = req.params.id;
+  const userId = req.params.id; // 사용자 ID를 추출
 
   try {
-    // MongoDB에서 해당 bookId에 해당하는 예약을 조회
-    const book = await Book.findById(Id).exec();
+    // MongoDB에서 해당 userId에 해당하는 예약을 조회
+    const books = await Book.find({ userId: userId }).exec();
 
-    if (!book) {
-      return res.status(404).json({ error: '예약이 없습니다.' }); // return 추가
+    if (!books || books.length === 0) {
+      return res.status(404).json({ error: '해당 사용자의 예약이 없습니다.' }); // return 추가
     } else {
-      return res.status(200).json(book); // return 추가
+      return res.status(200).json(books); // return 추가
     }
   } catch (error) {
     return res.status(500).json({ error: '예약 조회 중 오류가 발생했습니다.' }); // return 추가
